@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QWERTease demo</title>
+<style>
+  :root {
+    --bg: #0b0b0c;
+    --ink: #e8e8e4;
+    --dim: #6f6f6a;
+    --cursor: #e8e8e4;
+    --mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'Space Mono', Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--mono);
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    padding: 2rem;
+  }
+  .line {
+    font-size: clamp(1.1rem, 3.4vw, 1.7rem);
+    line-height: 1.6;
+    min-height: 1.7em;
+  }
+  .qwertease-cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    background: var(--cursor);
+    vertical-align: -0.15em;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .label {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 0.6rem;
+  }
+  button {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    background: transparent;
+    color: var(--dim);
+    border: 1px solid #2a2a28;
+    border-radius: 3px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+  button:hover { color: var(--ink); border-color: var(--dim); }
+</style>
+</head>
+<body>
+
+  <div>
+    <div class="label">no mistakes</div>
+    <div class="line" id="line1"></div>
+  </div>
+
+  <div>
+    <div class="label">mistakes on</div>
+    <div class="line" id="line2"></div>
+  </div>
+
+  <button id="replay">replay</button>
+
+  <script src="../src/qwertease.js"></script>
+  <script>
+    var el1 = document.getElementById('line1');
+    var el2 = document.getElementById('line2');
+
+    async function run() {
+      el1.innerHTML = '';
+      el2.innerHTML = '';
+      var q1 = new QWERTease(el1, { speed: 80 });
+      var q2 = new QWERTease(el2, { speed: 80, mistakes: true, mistakeRate: 0.09 });
+      await Promise.all([
+        q1.type('the quick brown fox jumps over the lazy dog'),
+        q2.type('the quick brown fox jumps over the lazy dog')
+      ]);
+    }
+
+    document.getElementById('replay').addEventListener('click', run);
+    run();
+  </script>
+</body>
+</html>
