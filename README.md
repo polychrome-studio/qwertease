@@ -10,6 +10,8 @@ Every "realistic typewriter" effect uses the same trick: a random number between
 
 QWERTease models that directly: every keystroke's delay is derived from the real QWERTY layout — which hand the key is on, the physical distance from the previous key, and which row it's in — the same way easing curves shape motion instead of linear interpolation. Applied to typing instead of animation. Hence the name.
 
+I design typefaces, and grew up around my grandfather's printing press — the physical rhythm of how one character sits next to the next has never been abstract to me, on paper or on screen. Keyboard input has that same rhythm. A flat random range never felt honest to it, so this is an attempt to actually model it.
+
 ## Install
 
 ```html
@@ -56,11 +58,9 @@ Each key has an approximate physical position (row + column, including the real 
 
 ## Mistake simulation
 
-While building the timing model, we found [`typecadence`](https://github.com/ccmars/typecadence) — a typing-animation library that simulates typos and corrections. It's a different problem than the one QWERTease solves (its own speed function is a flat random range; its QWERTY knowledge is used only to pick a plausible wrong key), but the idea of simulating mistakes at all was one we hadn't considered, and it's a genuinely nice touch. Credit to that project for putting it on the map.
+While building the timing model, I found [`typecadence`](https://github.com/ccmars/typecadence) — a typing-animation library that simulates typos and corrections. It's a different problem than the one QWERTease solves (its own speed function is a flat random range; its QWERTY knowledge is used only to pick a plausible wrong key), but the idea of simulating mistakes at all was one I hadn't considered, and it's a genuinely nice touch. Credit to that project for putting it on the map.
 
 Rather than port their approach, QWERTease's mistake simulation reuses the same key-position model that drives the timing: when a mistake triggers, `nearestKeys()` finds the physically closest keys to the intended one and types one of those instead, pauses (the beat before a person notices), backspaces, and retypes the correct key — using the same `keyDelay()` function throughout, including for the backspace and the correction. One geometry model doing both jobs, not two separate systems bolted together.
-
-`typecadence` is CC0 — no attribution is legally required — but the idea earned it anyway.
 
 ## License
 
